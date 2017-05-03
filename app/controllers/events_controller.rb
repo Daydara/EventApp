@@ -1,11 +1,16 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, :except => [:index]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_admin, :except => [:index, :show]
   # GET /events
   # GET /events.json
   def index
     @events = Event.all
+
+    @events_depassed = Event.depassed.order(:date)
+    @events_current = Event.current.order(:nom)
+    @events_futur = Event.futur.order(:date)
+
   end
 
   # GET /events/1
@@ -63,13 +68,18 @@ class EventsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def event_params
-      params.require(:event).permit(:Nom, :Description, :Date, :Heure)
-    end
+  def check_admin
+    redirect_to root_path unless current_user.admin?
+  end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_event
+    @event = Event.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def event_params
+    params.require(:event).permit(:Nom, :Description, :Date, :Heure)
+  end
 end
