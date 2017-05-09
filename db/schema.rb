@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 20170502085042) do
   create_table "table_tags", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "users_id"
     t.integer "events_id"
+    t.boolean "presence",  default: false
+    t.boolean "organizer", default: false
     t.index ["events_id"], name: "index_table_tags_on_events_id", using: :btree
     t.index ["users_id"], name: "index_table_tags_on_users_id", using: :btree
   end
